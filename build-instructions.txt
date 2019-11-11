@@ -1,0 +1,8 @@
+To build this application:
+
+Prerequisites: JDK 8, Maven
+
+1. Download ElasticSearch v.7.2 from https://www.elastic.co/downloads/past-releases/elasticsearch-7-2-0
+2. Unzip the ElasticSearch package and run the bin/elasticsearch script (use defaults)
+3. Run the application with the appropriate command line arguments (see run-instructions.txt)
+4. Done!

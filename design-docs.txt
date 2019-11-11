@@ -1,0 +1,47 @@
+When considering this application, I considered a number of possibilities to complete it:
+
+I began by considering a number of brute-force approaches, where I would implement manually reading the input data,
+parsing it into some search-optimized data structure, and then running some search algorithms on that data structure.
+However, I was unable to come up with anything satisfactory that I felt would be more optimal than offloading the search
+to a search-optimized data storage engine such as ElasticSearch.
+
+Options I considered included:
+
+1) Store all the data in 3 Map<String, List<ObjectData (where ObjectData is the data as presented)>>, one map for
+searching  user data by country, one by country/province, and one by country/province/city.  Then, based on the query,
+search the appropriate map, get the rank and the total count, and calculate the score.  An extension of this would also
+be to keep those Lists in sorted order by R-Value to make getting the rank faster.
+
+2) Store all the data in a nested map of maps, where the master map was the country map, then the province maps, then
+the city maps, and the City map would be a Map<String, List<ObjectData>>.  Then, based on the query, search the
+appropriate map, etc.
+
+3) Store all the data in one big list, sort the list by R-Value, then do a linear scan of the data for each query.
+
+I discounted these options one by one.  The worst option is option 2, because it makes getting the rank by superset
+(Country or Country/Province) very difficult, as you have to merge multiple sublists to get the master list and then
+search that.  The second-worst option is option 3, because it is always a linear-time search to get both the rank and
+also the total size of the master set.  The best option is option 1, especially with the modification of keeping the
+individual sublists in sorted order; with a smart implementation of the maps, getting both the rank and the total list
+size can be done in constant time (although insertion could be very slow because the lists would have to be kept sorted).
+
+The reason I chose not to go with any of the above 3 options is because of the input size and problem domain.  In a
+production environment, I would not use any of the above solutions; I would store the data in a search-optimized database
+(such as ElasticSearch, which is the technology I have chosen), which can be written to disk (mitigating the problem
+of input size and allowing high concurrency), backed up (in case of system failure), and so on.  Therefore, I chose to
+show how I would implement this solution in a production-like way, using technology similar to what I might use in
+production.
+
+In terms of the technology I chose to use, I chose to use Spring Boot, Maven, and ElasticSearch.  I chose Spring Boot
+because I am familiar with the framework and the ability to leverage dependency injection is helpful to me.  I chose
+to use Maven because I am more familiar with it than Gradle, and I needed a build tool to help wth using libraries
+that I needed (such as Spring and ElasticSearch).  I chose to use ElasticSearch as it is a search-optimized database;
+I considered using a SQL database like Postgres, but I decided against it because I thought SQL would be too heavy
+and I didn't need relational logic.  ElasticSearch is easy to set up and use and is optimized for search, which is why
+I chose it.
+
+In terms of test cases, I tested using the provided input as my first test.  As my second test, I chose to make one test
+of edge cases.  The edge case I thought of is what happens when each score is exactly at the borders of each percentile.
+Therefore I made a test of exactly 10 people with exactly 10 evenly-spaced scores.  As my third test, I chose to make a
+test checking duplicate values, to make sure that duplicate values would have the same score and would not include each
+other in the score calculation.  The test data I used can be found in the src/main/resources directory.

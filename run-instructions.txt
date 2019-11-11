@@ -1,0 +1,5 @@
+This application takes a single parameter, which is the path to the input file on the classpath.  If the input file is
+on the classpath, the application can be run from your favourite IDE by configuring a Maven job with the Main class as
+Bootstrap and the -file argument as the input file, or from command line with Maven:
+
+mvn exec:java -Dexec.mainClass=com.ertai87.ecobeetest.application.Bootstrap -Dexec.args="-file <filename here>"

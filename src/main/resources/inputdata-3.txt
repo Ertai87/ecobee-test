@@ -1,0 +1,15 @@
+"One Doe" "Canada/Ontario/Toronto" 1.0
+"Two Doe" "Canada/Ontario/Toronto" 2.0
+"Three Doe" "Canada/Ontario/Toronto" 3.0
+"Four Doe" "Canada/Ontario/Toronto" 4.0
+"Six Doe" "Canada/Ontario/Toronto" 4.5
+"Six Doe 2" "Canada/Ontario/Toronto" 4.5
+"Seven Doe" "Canada/Ontario/Toronto" 6.0
+"Eight Doe" "Canada/Ontario/Toronto" 7.0
+"Nine Doe" "Canada/Ontario/Toronto" 8.0
+"Ten Doe" "Canada/Ontario/Toronto" 9.0
+
+"Four Doe" "Canada/Ontario/Toronto"
+"Six Doe" "Canada/Ontario/Toronto"
+"Six Doe 2" "Canada/Ontario/Toronto"
+"Seven Doe" "Canada/Ontario/Toronto"

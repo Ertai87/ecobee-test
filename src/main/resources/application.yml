@@ -1,0 +1,4 @@
+elasticsearch:
+  hostnames: 127.0.0.1
+  port: 9200
+  index.name: user-rvalue-index

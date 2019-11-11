@@ -1,0 +1,25 @@
+{
+  "settings" : {
+    "number_of_shards" : 1,
+    "index.refresh_interval" : "1s"
+  },
+  "mappings": {
+    "properties": {
+      "name" : {
+        "type": "keyword"
+      },
+      "rvalue" : {
+        "type": "double"
+      },
+      "country" : {
+        "type": "keyword"
+      },
+      "province" : {
+        "type": "keyword"
+      },
+      "city" : {
+        "type": "keyword"
+      }
+    }
+  }
+}
