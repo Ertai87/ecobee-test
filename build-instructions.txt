@@ -5,4 +5,5 @@ Prerequisites: JDK 8, Maven
 1. Download ElasticSearch v.7.2 from https://www.elastic.co/downloads/past-releases/elasticsearch-7-2-0
 2. Unzip the ElasticSearch package and run the bin/elasticsearch script (use defaults)
 3. Run the application with the appropriate command line arguments (see run-instructions.txt)
-4. Done!
+4. If you get an error about a missing synonyms.txt file, simply create an empty file in the desired subdirectory of the Elasticsearch 7.2 root directory with the desired name.
+Done!
