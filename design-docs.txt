@@ -103,3 +103,8 @@ is composed of 4 constant time operations, so is constant time per query, and O(
 
 Therefore, if we take n = input size = d + q, then the data ingestion part is upper bounded as O(nlogn) and the query part is
 upper bounded at O(n), so overall the algorithm takes O(nlogn) + O(n) = O(nlogn) time.
+
+A weakness of the above solution is that it cannot be queried against for "what if?" scenarios, i.e. scenarios where the
+location being queried against is not the location that the name is connected with in the input data (the ElasticSearch 
+solution handles this case).  However, that case is not explicitly mentioned in the requirements and was not clarified when
+I asked about it, so I am assuming it's not a real case.
