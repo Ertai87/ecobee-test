@@ -45,3 +45,61 @@ of edge cases.  The edge case I thought of is what happens when each score is ex
 Therefore I made a test of exactly 10 people with exactly 10 evenly-spaced scores.  As my third test, I chose to make a
 test checking duplicate values, to make sure that duplicate values would have the same score and would not include each
 other in the score calculation.  The test data I used can be found in the src/main/resources directory.
+
+Regarding runtime efficiency, I came to the conclusion that in the general case, the worst-time complexity of this problem
+must be lower-bounded by O(nlogn) where n is the number of rows in the data (not the query).  In the general case, an
+acceptable query section might include querying every data point 3 times, once for Country, once for Country/Province, and
+once for Country/Province/City.  Taking an amalgamation of all these queries would yield the sorted lists of R-Values across
+each query domain (i.e. some number of sorted lists filtered by country, some number by country/province, and some by
+country/province/city).  Since sorting is bounded below by O(nlogn) then this problem can't be completed any faster than that
+in the general case.
+
+The solution I have provided takes linear time to read the input and insert it into ElasticSearch.  Since I do not know the
+runtime efficiency of ElasticSearch's operations, I can't generalize any more except to say that my algorithm is bounded
+below by O(nlogn) worst-case, and whatever other inefficiencies arise are due to the internals of ElasticSearch.  However,
+since ElasticSearch is a search-optimized database, it will probably run close to this O(nlogn) lower bound.
+
+If I was to solve this problem using an encapsulated approach (without the use of external technologies such as
+ElasticSearch), option 1 above could result in the proposed O(nlogn) lower bound:
+
+Data ingestion:
+For each map in (country, country/province, country/province/city):
+  Get the List<ObjectData> corresponding to this data's location
+  Add this item to the end of that list
+Done
+For each list in each map:
+  Sort the list
+Done
+Create an index of elements as follows:
+  Data structure: Map<String, List<Integer>>
+  - Key is name of customer
+  - Value is a 3-tuple of ints:
+    - Element 1: The position of this name in the corresponding country list (corresponding to this name's location info)
+    - Element 2: "                                            " country/province "                                      "
+    - Element 3: "                                            " country/province/city "                                 "
+
+The first section of the above operation is constant time for each element (getting a value from a map, then adding the 
+element to the list, both are constant-time operations) making the overall loop O(d) for d users.
+
+The second section of the above operation is sorting 3d elements (there are 3 instances of each data item, so there are 3d
+total items).  Thus the runtime is 3O(dlogd), and since we remove constants it's just O(dlogd).
+
+For the 3rd section, it's a for loop over every element of every list (3d total elements as above).  For each element, add 1
+item to a list inside a map (constant time, as above).  So overall this operation is 3O(d) = O(d)
+
+So overall the data ingestion is O(d) + O(dlogd) + O(d) = O(dlogd)
+
+Calculate rank:
+list <- Get the correct list from the correct map based on the query location (determine which type of query between country,
+country/province, country/province/city is being queried, then get the location data from that map)
+position <- Get the position from the index corresponding to this user's name and the query type
+total <- list.size
+return score(position, total)
+
+Getting the list is constant time, it's simply a map query. Getting the position is a map query plus a list query, which are 
+both constant time operations.  Getting the total is a list size query, which is constant time.  Calculating the score based 
+on those parameters is a simple math operation, which we assume to be constant time.  Therefore the calculate rank operation 
+is composed of 4 constant time operations, so is constant time per query, and O(q) time for q queries.
+
+Therefore, if we take n = input size = d + q, then the data ingestion part is upper bounded as O(nlogn) and the query part is
+upper bounded at O(n), so overall the algorithm takes O(nlogn) + O(n) = O(nlogn) time.
